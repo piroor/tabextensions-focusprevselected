@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+
+<overlay
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<script type="application/x-javascript"><![CDATA[
+
+
+if (!window.TabbrowserFocusPreviouslySelectedTabService) {
+
+
+
+var TabbrowserFocusPreviouslySelectedTabService = {
+	enabled : true,
+
+	get tabs()
+	{
+		var tabs        = gBrowser.mTabs;
+		var tmpTabs     = [];
+		var focusedTabs = [];
+		for (var i = tabs.length-1; i > -1; i--)
+		{
+			if (tabs[i].__tabextensions__lastFocusedTime)
+				focusedTabs.push(tabs[i]);
+			else
+				tmpTabs.push(tabs[i]);
+		}
+
+		focusedTabs.sort(
+			function(aTabA, aTabB)
+			{
+				return (aTabA.__tabextensions__lastFocusedTime - aTabB.__tabextensions__lastFocusedTime);
+			}
+		);
+
+		return tmpTabs.concat(focusedTabs);
+	},
+
+	focusPreviouslySelectedTab : function()
+	{
+		var tabs = this.tabs;
+		if (tabs.length < 2) return;
+
+		gBrowser.selectedTab = tabs[tabs.length-2];
+	},
+
+	advanceSelectedTab : function(aDir)
+	{
+		var b = gBrowser;
+		if (b.mTabs.length < 2) return;
+
+		var fromContent = (document.commandDispatcher.focusedWindow != window);
+
+		var tabs  = this.tabs;
+		var index = tabs.length-1;
+		var next;
+
+		if (aDir > 0)
+			index = (index + 1) % tabs.length;
+		else
+			index = (index - 1 + tabs.length) % tabs.length;
+
+		next = tabs[index];
+
+		if (next && next != b.mTabContainer.selectedItem) {
+			if (index != tabs.length-1) {
+				var beforeTabs = tabs.slice(0, index);
+				var now = (new Date()).getTime();
+				for (var i = 0; i < beforeTabs.length; i++)
+					beforeTabs[i].__tabextensions__lastFocusedTime = now-beforeTabs.length-1+i;
+			}
+
+			b.mTabContainer.selectedItem = next;
+			if (b.mTabContainer.getAttribute('setfocus') != 'false') {
+				next.focus();
+				document.commandDispatcher.advanceFocusIntoSubtree(next);
+				b.setFocusInternal();
+			}
+		}
+
+		b.scrollTabbarTo(next);
+
+		// failsafe
+		if (fromContent)
+			Components.lookupMethod(b.contentWindow, 'focus').call(b.contentWindow);
+	}
+
+};
+
+//if (!window.TabbrowserServiceModules)
+//	window.TabbrowserServiceModules = [];
+//if ('TabbrowserFocusPreviouslySelectedTabService' in window && //TabbrowserFocusPreviouslySelectedTabService.enabled)
+//	TabbrowserServiceModules.push(TabbrowserFocusPreviouslySelectedTabService);
+
+
+}
+
+]]></script>
+
+
+<!-- old Mozilla -->
+<keyset id="navKeys">
+	<keyset id="mainKeyset"/>
+</keyset>
+
+<keyset id="mainKeyset">
+	<keyset id="keyset_tabextensions">
+		<key id="key_focusPreviouslySelectedTab"
+			keycode="VK_LEFT"
+			modifiers="alt,shift"
+			oncommand="TabbrowserFocusPreviouslySelectedTabService.focusPreviouslySelectedTab();"/>
+		<key id="key_advanceSelectedTabToPreviouslySelected"
+			keycode="VK_UP"
+			modifiers="alt,shift"
+			oncommand="TabbrowserFocusPreviouslySelectedTabService.advanceSelectedTab(-1);"/>
+		<key id="key_advanceSelectedTabToNextSelected"
+			keycode="VK_DOWN"
+			modifiers="alt,shift"
+			oncommand="TabbrowserFocusPreviouslySelectedTabService.advanceSelectedTab(1);"/>
+	</keyset>
+</keyset>
+
+</overlay>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		xmlns:chrome="http://www.mozilla.org/rdf/chrome#">
+
+	<!-- list all the packages being supplied by this jar -->
+	<RDF:Seq about="urn:mozilla:package:root">
+		<RDF:li resource="urn:mozilla:package:tabextensions_focusprevselected"/>
+	</RDF:Seq>
+
+	<!-- package information -->
+	<RDF:Description about="urn:mozilla:package:tabextensions_focusprevselected"
+		chrome:name="tabextensions_focusprevselected"
+		chrome:displayName="Tabbrowser Extensions:Focus Previously Selected Tab Module"
+		chrome:author="SHIMODA Hiroshi"
+		chrome:authorURL="http://piro.sakura.ne.jp/"
+		chrome:extension="true"
+		chrome:description="You can focus to the tab previously selected, with the keyboard shortcut Shift-Alt-Left. And, Shift-Alt-Up/Down can switch tabs in the order recently selected, like Alt-Tab in MS-Windows. This depends on &quot;Tabbrowser Extensions&quot;."/>
+
+
+	<!-- overlay information -->
+	<RDF:Seq about="urn:mozilla:overlays">
+		<RDF:li resource="chrome://tabextensions/content/browserOverlay.xul"/>
+	</RDF:Seq>
+
+
+	<RDF:Seq about="chrome://tabextensions/content/browserOverlay.xul">
+		<RDF:li>chrome://tabextensions_focusprevselected/content/browserOverlay.xul</RDF:li>
+	</RDF:Seq>
+
+</RDF:RDF>
