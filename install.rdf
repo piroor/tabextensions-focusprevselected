@@ -9,8 +9,10 @@
                    em:creator="SHIMODA Hiroshi"
                    em:description="You can focus to the tab previously selected, with the keyboard shortcut Shift-Alt-Left. And, Shift-Alt-Up/Down can switch tabs in the order recently selected, like Alt-Tab in MS-Windows. This extension requires the &quot;Tabbrowser Extensions.&quot;"
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_tabextensions_modules.html"
-                   em:iconURL=""
                    em:optionsURL="chrome://tabextensions/content/pref/prefDialogCall.xul">
+<!--
+                   em:iconURL=""
+-->
 
 
     <em:updateURL>https://pub.cozmixng.org/~piro/xul/xul.rdf.en</em:updateURL>
